@@ -1084,7 +1084,7 @@
             }
             return dispatcher.useContext(Context);
           }
-          function useState2(initialState) {
+          function useState(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -1887,7 +1887,7 @@
           exports.useMemo = useMemo;
           exports.useReducer = useReducer;
           exports.useRef = useRef;
-          exports.useState = useState2;
+          exports.useState = useState;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
           exports.version = ReactVersion;
@@ -10386,8 +10386,8 @@
               var nextNode = node.nextSibling;
               parentInstance.removeChild(node);
               if (nextNode && nextNode.nodeType === COMMENT_NODE) {
-                var data = nextNode.data;
-                if (data === SUSPENSE_END_DATA) {
+                var data2 = nextNode.data;
+                if (data2 === SUSPENSE_END_DATA) {
                   if (depth === 0) {
                     parentInstance.removeChild(nextNode);
                     retryIfBlockedOn(suspenseInstance);
@@ -10395,7 +10395,7 @@
                   } else {
                     depth--;
                   }
-                } else if (data === SUSPENSE_START_DATA || data === SUSPENSE_PENDING_START_DATA || data === SUSPENSE_FALLBACK_START_DATA) {
+                } else if (data2 === SUSPENSE_START_DATA || data2 === SUSPENSE_PENDING_START_DATA || data2 === SUSPENSE_FALLBACK_START_DATA) {
                   depth++;
                 }
               }
@@ -10540,14 +10540,14 @@
             var depth = 0;
             while (node) {
               if (node.nodeType === COMMENT_NODE) {
-                var data = node.data;
-                if (data === SUSPENSE_END_DATA) {
+                var data2 = node.data;
+                if (data2 === SUSPENSE_END_DATA) {
                   if (depth === 0) {
                     return getNextHydratableSibling(node);
                   } else {
                     depth--;
                   }
-                } else if (data === SUSPENSE_START_DATA || data === SUSPENSE_FALLBACK_START_DATA || data === SUSPENSE_PENDING_START_DATA) {
+                } else if (data2 === SUSPENSE_START_DATA || data2 === SUSPENSE_FALLBACK_START_DATA || data2 === SUSPENSE_PENDING_START_DATA) {
                   depth++;
                 }
               }
@@ -10560,14 +10560,14 @@
             var depth = 0;
             while (node) {
               if (node.nodeType === COMMENT_NODE) {
-                var data = node.data;
-                if (data === SUSPENSE_START_DATA || data === SUSPENSE_FALLBACK_START_DATA || data === SUSPENSE_PENDING_START_DATA) {
+                var data2 = node.data;
+                if (data2 === SUSPENSE_START_DATA || data2 === SUSPENSE_FALLBACK_START_DATA || data2 === SUSPENSE_PENDING_START_DATA) {
                   if (depth === 0) {
                     return node;
                   } else {
                     depth--;
                   }
-                } else if (data === SUSPENSE_END_DATA) {
+                } else if (data2 === SUSPENSE_END_DATA) {
                   depth++;
                 }
               }
@@ -24461,16 +24461,24 @@
   var import_client = __toESM(require_client());
 
   // src/App.jsx
-  var import_react = __toESM(require_react());
   var import_jsx_runtime = __toESM(require_jsx_runtime());
-  var App = () => {
-    const [count, setCount] = (0, import_react.useState)(0);
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-      "Count - ",
-      count,
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => setCount((prevCount) => prevCount + 1), children: "Click" })
-    ] });
+  var App = ({ data: data2 }) => {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", { children: data2.map(({ name, mark }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: [
+      name,
+      " - ",
+      mark
+    ] }, name)) });
   };
+  var data = [
+    { name: "TypeScript", mark: "4.9" },
+    { name: "JavaScript", mark: "4.8" },
+    { name: "Go", mark: "4.7" }
+  ];
+  App.getServerSideProps = () => new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(data);
+    }, 1e3);
+  });
 
   // src/client.jsx
   var import_jsx_runtime2 = __toESM(require_jsx_runtime());

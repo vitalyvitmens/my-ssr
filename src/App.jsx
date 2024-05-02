@@ -1,14 +1,24 @@
-import { useState } from 'react'
-
-export const App = () => {
-  const [count, setCount] = useState(0)
-
+export const App = ({ data }) => {
   return (
-    <div>
-      Count - {count}
-      <button onClick={() => setCount((prevCount) => prevCount + 1)}>
-        Click
-      </button>
-    </div>
+    <ul>
+      {data.map(({ name, mark }) => (
+        <li key={name}>
+          {name} - {mark}
+        </li>
+      ))}
+    </ul>
   )
 }
+
+const data = [
+  { name: 'TypeScript', mark: '4.9' },
+  { name: 'JavaScript', mark: '4.8' },
+  { name: 'Go', mark: '4.7' },
+]
+
+App.getServerSideProps = () =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(data)
+    }, 1000)
+  })

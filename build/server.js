@@ -1382,7 +1382,7 @@ var require_react_development = __commonJS({
           }
           return dispatcher.useContext(Context);
         }
-        function useState2(initialState) {
+        function useState(initialState) {
           var dispatcher = resolveDispatcher();
           return dispatcher.useState(initialState);
         }
@@ -2185,7 +2185,7 @@ var require_react_development = __commonJS({
         exports2.useMemo = useMemo;
         exports2.useReducer = useReducer;
         exports2.useRef = useRef;
-        exports2.useState = useState2;
+        exports2.useState = useState;
         exports2.useSyncExternalStore = useSyncExternalStore;
         exports2.useTransition = useTransition;
         exports2.version = ReactVersion;
@@ -9561,7 +9561,7 @@ var require_react_dom_server_legacy_node_development = __commonJS({
         function basicStateReducer(state, action) {
           return typeof action === "function" ? action(state) : action;
         }
-        function useState2(initialState) {
+        function useState(initialState) {
           {
             currentHookNameInDev = "useState";
           }
@@ -9743,7 +9743,7 @@ var require_react_dom_server_legacy_node_development = __commonJS({
           useMemo,
           useReducer,
           useRef,
-          useState: useState2,
+          useState,
           useInsertionEffect: noop,
           useLayoutEffect,
           useCallback,
@@ -15002,7 +15002,7 @@ var require_react_dom_server_node_development = __commonJS({
         function basicStateReducer(state, action) {
           return typeof action === "function" ? action(state) : action;
         }
-        function useState2(initialState) {
+        function useState(initialState) {
           {
             currentHookNameInDev = "useState";
           }
@@ -15184,7 +15184,7 @@ var require_react_dom_server_node_development = __commonJS({
           useMemo,
           useReducer,
           useRef,
-          useState: useState2,
+          useState,
           useInsertionEffect: noop,
           useLayoutEffect,
           useCallback,
@@ -17421,23 +17421,32 @@ var import_promises = require("fs/promises");
 var import_server = __toESM(require_server_node());
 
 // src/App.jsx
-var import_react = __toESM(require_react());
 var import_jsx_runtime = __toESM(require_jsx_runtime());
-var App = () => {
-  const [count, setCount] = (0, import_react.useState)(0);
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-    "Count - ",
-    count,
-    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => setCount((prevCount) => prevCount + 1), children: "Click" })
-  ] });
+var App = ({ data: data2 }) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", { children: data2.map(({ name, mark }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: [
+    name,
+    " - ",
+    mark
+  ] }, name)) });
 };
+var data = [
+  { name: "TypeScript", mark: "4.9" },
+  { name: "JavaScript", mark: "4.8" },
+  { name: "Go", mark: "4.7" }
+];
+App.getServerSideProps = () => new Promise((resolve) => {
+  setTimeout(() => {
+    resolve(data);
+  }, 1e3);
+});
 
 // src/server.jsx
 var import_http = __toESM(require("http"));
 var import_jsx_runtime2 = __toESM(require_jsx_runtime());
 import_http.default.createServer(async (req, res) => {
   const template = await (0, import_promises.readFile)("./index.html", "utf-8");
-  const html = (0, import_server.renderToStaticMarkup)(/* @__PURE__ */ (0, import_jsx_runtime2.jsx)(App, {}));
+  const data2 = await App.getServerSideProps();
+  const html = (0, import_server.renderToStaticMarkup)(/* @__PURE__ */ (0, import_jsx_runtime2.jsx)(App, { data: data2 }));
   res.writeHead(200, { "Content-Type": "text/html" });
   res.end(
     template.replace('<div id="root"></div>', `<div id="root">${html}</div>`)
