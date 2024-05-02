@@ -1,5 +1,5 @@
 import { readFile } from 'fs/promises'
-import { renderToString } from 'react-dom/server'
+import { renderToPipeableStream } from 'react-dom/server'
 import { App } from './App'
 import http from 'http'
 
@@ -15,22 +15,42 @@ http
       return
     }
 
-    const template = await readFile('./index.html', 'utf-8')
-    const data = await App.getServerSideProps()
-    const html = renderToString(<App data={data} />)
-
-    res.writeHead(200, { 'Content-Type': 'text/html' })
-
-    res.end(
-      template.replace(
-        '<div id="root"></div>',
-        `<div id="root">${html}</div><script>window.data = ${JSON.stringify(
-          data
-        )}</script>`
-      )
-    )
+    const stream = renderToPipeableStream(<App />, {
+      bootstrapScripts: ['bundle.js'],
+      onShellReady: () => {
+        stream.pipe(res)
+      },
+    })
   })
   .listen(3000)
+
+// import { readFile } from 'fs/promises'
+// import { renderToString } from 'react-dom/server'
+// import { App } from './App'
+// import http from 'http'
+
+// http
+//   .createServer(async (req, res) => {
+//     if (req.url === '/bundle.js') {
+//       const bundle = await readFile('./dist/bundle.js')
+
+//       res.writeHead(200, { 'Content-Type': 'text/javascript' })
+
+//       res.end(bundle)
+
+//       return
+//     }
+
+//     const template = await readFile('./index.html', 'utf-8')
+//     const html = renderToString(<App />)
+
+//     res.writeHead(200, { 'Content-Type': 'text/html' })
+
+//     res.end(
+//       template.replace('<div id="root"></div>', `<div id="root">${html}</div>`)
+//     )
+//   })
+//   .listen(3000)
 
 // // import express from 'express'
 // import { readFile } from 'fs/promises'

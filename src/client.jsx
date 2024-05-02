@@ -1,4 +1,6 @@
 import { hydrateRoot } from 'react-dom/client'
 import { App } from './App'
 
-hydrateRoot(document.getElementById('root'), <App data={window.data} />)
+if (typeof window !== 'undefined') {
+  hydrateRoot(document, <App />)
+}
