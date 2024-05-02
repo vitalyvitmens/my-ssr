@@ -1084,7 +1084,7 @@
             }
             return dispatcher.useContext(Context);
           }
-          function useState(initialState) {
+          function useState2(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -1887,7 +1887,7 @@
           exports.useMemo = useMemo;
           exports.useReducer = useReducer;
           exports.useRef = useRef;
-          exports.useState = useState;
+          exports.useState = useState2;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
           exports.version = ReactVersion;
@@ -24461,28 +24461,35 @@
   var import_client = __toESM(require_client());
 
   // src/App.jsx
+  var import_react = __toESM(require_react());
   var import_jsx_runtime = __toESM(require_jsx_runtime());
   var App = ({ data: data2 }) => {
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", { children: data2.map(({ name, mark }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: [
-      name,
-      " - ",
-      mark
-    ] }, name)) });
+    const [count, setCount] = (0, import_react.useState)(0);
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+      "Count = ",
+      count,
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", { onClick: () => setCount((prevCount) => prevCount + 1), children: "Click" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", { children: data2.map(({ name, mark }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: [
+        name,
+        " - ",
+        mark
+      ] }, name)) })
+    ] });
   };
   var data = [
-    { name: "TypeScript", mark: "4.9" },
+    { name: "TypeScript", mark: (/* @__PURE__ */ new Date()).getSeconds() },
     { name: "JavaScript", mark: "4.8" },
     { name: "Go", mark: "4.7" }
   ];
   App.getServerSideProps = () => new Promise((resolve) => {
     setTimeout(() => {
       resolve(data);
-    }, 1e3);
+    }, 2e3);
   });
 
   // src/client.jsx
   var import_jsx_runtime2 = __toESM(require_jsx_runtime());
-  (0, import_client.hydrateRoot)(document.getElementById("root"), /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(App, {}));
+  (0, import_client.hydrateRoot)(document.getElementById("root"), /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(App, { data: window.data }));
 })();
 /*! Bundled license information:
 
